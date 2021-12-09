@@ -1,6 +1,6 @@
-**chunkify.js**
+**chunkify_fix.js**
 ---------------
-Function was added to split text (as strings) into smaller chunks of no more than characters specified by the end user. Function was subsequently exported.
+Function was added to split text (as strings) into smaller chunks of no more than characters specified by the end user. Function was subsequently exported. (_Recursive Implementation_)
 
 **chunkify_test.js**
 --------------------

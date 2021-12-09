@@ -1,6 +1,7 @@
 function chunkify(message, maxChars){
     const lines = message.split(/\n/);
     let chunks = [];
+    let line = '';
     for (let i = 0; i < lines.length; i++){
         const numChars = lines[i].length;
         if (line.length + numChars < maxChars){
@@ -28,5 +29,6 @@ function chunkify(message, maxChars){
     }
     return chunks;
 }
+
 
 module.exports = {chunkify: chunkify};

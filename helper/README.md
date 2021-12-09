@@ -10,4 +10,4 @@ Functions added to enable user to read in output.txt files and test chunkify.
 **genstrs.py**
 --------------
 Python code to generate strings based on users input length. Uses standard ascii letters and digits in addition to the newline character `'\n'` and white space `' '`.<br>
-`NEW ` Added function which provides solely whitespaced strings and added functionality for print output to be saved as an output file for testing.
+`NEW` Added function which provides solely whitespaced strings and added functionality for print output to be saved as an output file for testing.

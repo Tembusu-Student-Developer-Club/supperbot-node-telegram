@@ -1,9 +1,8 @@
 function chunkify(message, maxChars){
     const lines = message.split(/\n/);
     let chunks = [];
-    let numChars = 0;
     for (let i = 0; i < lines.length; i++){
-        numChars = lines[i].length;
+        const numChars = lines[i].length;
         if (line.length + numChars < maxChars){
             line += lines[i];
             chunks.push(line);

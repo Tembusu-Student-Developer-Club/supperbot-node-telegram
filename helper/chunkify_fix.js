@@ -16,24 +16,21 @@ function createChunks(message, maxChars){
     const carriageIdx = firstSection.lastIndexOf('\r');
     const breakIdx = Math.max(nextlineIdx, carriageIdx); //the last occurrence of carriage return and newline
 
-    let currLine = '', remainder = '', splitIdx = 0, remIdx = 0;
+    let currLine = '', remainder = '', splitIdx = 0;
     
     if (breakIdx >= 0){
         splitIdx = breakIdx;
-        remIdx = breakIdx + 1;
-    } else {
+    } else { //no line break found
         const whitespaceIdx = firstSection.lastIndexOf(' ');
         if (whitespaceIdx >= 0){
             splitIdx = whitespaceIdx;
-            remIdx = whitespaceIdx + 1;
         } else {
-            splitIdx = maxChars;
-            remIdx = maxChars;
+            splitIdx = maxChars - 1; //includes maxChars in chunk
         }
     }
 
-    currLine = message.slice(0, splitIdx)
-    remainder = message.slice(remIdx);
+    currLine = message.slice(0, splitIdx);
+    remainder = message.slice(splitIdx + 1);
     chunks.push(currLine);
 
     const subChunk = createChunks(remainder, maxChars);

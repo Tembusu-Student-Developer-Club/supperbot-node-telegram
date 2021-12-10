@@ -14,7 +14,8 @@ function test_chunkify(fileName, maxChars) {
 
 let res = [];
 try {
-    res = test_chunkify('./test_inputs.txt', Math.floor((Math.random() * 10000)));
+    res = text_chunkify('./test_inputs.txt', 0) //test case for error handling
+//     res = test_chunkify('./test_inputs.txt', Math.floor((Math.random() * 10000)));
     console.log(res);
 } catch (e) {
     console.log(e);

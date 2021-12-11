@@ -1,4 +1,4 @@
-function createChunks(message, maxChars){
+function chunkify(message, maxChars){
     if (maxChars < 1){
         throw "Invalid input";
     }
@@ -33,11 +33,11 @@ function createChunks(message, maxChars){
     remainder = message.slice(splitIdx + 1);
     chunks.push(currLine);
 
-    const subChunk = createChunks(remainder, maxChars);
+    const subChunk = chunkify(remainder, maxChars);
     for (let i = 0; i < subChunk.length; ++i){
         chunks.push(subChunk[i]);
     }
     return chunks;
 }
 
-module.exports = {createChunks: createChunks};
+module.exports = {chunkify: chunkify};

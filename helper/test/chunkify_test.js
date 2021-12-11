@@ -1,9 +1,9 @@
 var fs = require('fs')
-const createChunks = require('./chunkify_fix.js').createChunks
+const chunkify = require('./chunkify_fix.js').chunkify
 
 function test_chunkify(fileName, maxChars) {
     const text = fs.readFileSync(fileName).toString("utf-8");
-    const res = createChunks(text, maxChars);
+    const res = chunkify(text, maxChars);
 
     for (let i = 0; i < res.length; ++i) {
         console.log(i);

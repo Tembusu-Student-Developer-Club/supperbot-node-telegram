@@ -1,5 +1,5 @@
 var fs = require('fs')
-const chunkify = require('./chunkify_fix.js').chunkify
+const chunkify = require('./chunkify.js').chunkify
 
 function test_chunkify(fileName, maxChars) {
     const text = fs.readFileSync(fileName).toString("utf-8");

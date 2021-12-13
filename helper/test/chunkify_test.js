@@ -10,7 +10,7 @@ function test_chunkify(text, maxChars) {
 
 let res = [];
 try {
-    res = test_chunkify('./out_newline4.txt', 0);
+    res = test_chunkify(text, 0);
     console.log(res);
 } catch (e) {
     console.log(e);

@@ -13,7 +13,7 @@ class Menu {
 }
 
 // Convert .yml file to object
-const ymlFileToText = (filename) => {
+const ymlFileToDict = (filename) => {
     try {
         const raw = fs.readFileSync(filename);
         const data = YAML.load(raw)

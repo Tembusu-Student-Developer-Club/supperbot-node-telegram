@@ -22,6 +22,8 @@ const ymlFileToDict = (filename) => {
         console.log(e)
     }
 }
+
+// Returns menu object
 const getMenu = (data) => {
     const menu = new Menu(data)
     return menu

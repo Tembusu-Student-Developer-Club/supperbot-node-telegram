@@ -10,6 +10,7 @@ const birthday = require("./handlers/birthday").birthday;
 const queries = require('./db/queries');
 const config = require('./config');
 const messenger = require('./messenger');
+const updateusername = require("./handlers/updateusername");
 const {token, commands, debug} = config;
 
 let bot;
@@ -50,6 +51,7 @@ bot.on('message', (msg) => {
     } else {
         command = msg.text;
     }
+    updateusername.init(msg);
     switch (command) {
         case '/openjio':
             openjio.init(msg);

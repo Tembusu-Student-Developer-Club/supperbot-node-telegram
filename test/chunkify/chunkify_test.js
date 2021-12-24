@@ -3,8 +3,6 @@ const randomTextGenerator = require('./randomTextGenerator').randomTextGenerator
 const readTextFile = require('./readTextFile').readTextFile;
 const assert = require('assert');
 
-const NEGATIVE_CHAR_LIMIT = -1;
-const INVALID_CHAR_LIMIT = 0;
 const SMALL_CHAR_LIMIT = 60;
 const TELEGRAM_CHAR_LIMIT = 4096; //Telegram supports up to 4096 UTF-8 characters
 
@@ -75,20 +73,20 @@ describe('Chunkify', function () {
      */
 
     it('should throw error when maxChars is less than 1', function(done) {
+        const VALID_SMALL_TEST_MESSAGE = randomTextGenerator(SMALL_CHAR_LIMIT);
         assert.throws(
             () => {
-                chunkify(EMPTY_STRING, INVALID_CHAR_LIMIT);
-                chunkify(EMPTY_STRING, NEGATIVE_CHAR_LIMIT);
+                chunkify(VALID_SMALL_TEST_MESSAGE, Math.floor((Math.random() * -10)));
             }
         );
         done();
     });
 
     /**
-     * Tests whether small valid messages passed in as text files containing CHAR_LIMIT characters is un-modified.
+     * Tests whether small valid messages converted from text files to a String containing CHAR_LIMIT characters is un-modified.
      */
 
-    it('should not modify valid small messages passed in as text files', function(done) {
+    it('should not modify valid small messages converted from text files to a String', function(done) {
         const testFilePath = "test/chunkify/testInputSmall.txt";
         const VALID_SMALL_TEST_MESSAGE = readTextFile(testFilePath);
         const actualChunkifiedMessage = chunkify(VALID_SMALL_TEST_MESSAGE, SMALL_CHAR_LIMIT);
@@ -97,10 +95,10 @@ describe('Chunkify', function () {
     });
 
     /**
-     * Tests whether large valid messages passed in as text files containing CHAR_LIMIT characters is un-modified.
+     * Tests whether large valid messages converted from text files to a String containing CHAR_LIMIT characters is un-modified.
      */
 
-    it('should not modify valid large messages passed in as text files', function(done) {
+    it('should not modify valid large messages converted from text files to a String', function(done) {
         const testFilePath = "test/chunkify/testInput.txt";
         const VALID_LARGE_TEST_MESSAGE = readTextFile(testFilePath);
         const actualChunkifiedMessage = chunkify(VALID_LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
@@ -109,11 +107,11 @@ describe('Chunkify', function () {
     });
 
     /**
-     * Tests whether large messages passed in as text files containing number of characters greater than CHAR_LIMIT characters are modified appropriately
+     * Tests whether large messages converted from text files to a String containing number of characters greater than CHAR_LIMIT characters are modified appropriately
      * (i.e. no Empty Strings within output and split in order of linebreaks, whitespace and characters where appropriate).
      */
 
-    it('should split large messages passed in as text files in order of linebreaks, whitespace and characters where appropriate', function(done) {
+    it('should split large messages converted from text files to a String in order of linebreaks, whitespace and characters where appropriate', function(done) {
         const testFilePath = "test/chunkify/testInputLarge.txt";
         const LARGE_TEST_MESSAGE = readTextFile(testFilePath);
         const actualChunkifiedMessage = chunkify(LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
@@ -122,4 +120,20 @@ describe('Chunkify', function () {
         }
         done();
     });
+
+    /**
+     * Tests whether exception is thrown when invalid/negative CHAR_LIMIT and a text file converted to a String are passed into chunkify
+     */
+
+    it('should throw error when maxChars is less than 1', function(done) {
+        const testFilePath = "test/chunkify/testInputSmall.txt";
+        const VALID_SMALL_TEST_MESSAGE = readTextFile(testFilePath);
+        assert.throws(
+            () => {
+                chunkify(VALID_SMALL_TEST_MESSAGE, 0);
+            }
+        );
+        done();
+    });
+
 })

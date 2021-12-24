@@ -103,7 +103,11 @@ module.exports.callback = async function (query) {
 }
 
 const createOverviewMessage = function (menuName, closerName, compiledOrders, userOrders, deliveryFee) {
-    let result = 'This jio for ' + menuName + ' was successfully closed by ' + closerName + '.\n\n'
+    let result = 'This jio for ' + menuName + ' was successfully closed by ' + closerName;
+    if (menuName === menus[0]) {
+        result += '.You can place your order with Al Amaans by calling 67740637'
+    }
+    result += '.\n\n';
     //TODO: add jio closer name
     if (compiledOrders.length === 0) {
         return result + 'There are no items in this jio.';

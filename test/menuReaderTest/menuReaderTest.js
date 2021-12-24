@@ -1,6 +1,8 @@
 const assert = require('assert');
-const getMenuFromFile = require('../helpers/menuReader').getMenuFromFile;
-const Menu = require('../helpers/menuReader').Menu;
+const {YAMLError} = require("yaml/util");
+const {YAMLException} = require("js-yaml");
+const getMenuFromFile = require('../../helpers/menuReader').getMenuFromFile;
+const Menu = require('../../helpers/menuReader').Menu;
 
 const SAMPLE_MENU = new Menu({
     "Delivery": 100,
@@ -29,7 +31,7 @@ describe('GetMenuFromFile', function() {
      * Tests whether valid yml file is parsed correctly.
      */
     it('should output valid menu', function(done) {
-        const actualMenu = getMenuFromFile('test/testUtil/sampleMenu.yml')
+        const actualMenu = getMenuFromFile('test/menuReaderTest/testUtil/sampleMenu.yml')
         try {
             assert.deepEqual(actualMenu, SAMPLE_MENU);
             done();
@@ -54,8 +56,8 @@ describe('GetMenuFromFile', function() {
      */
     it('should throw yml parsing error', function(done) {
         assert.throws(function () {
-            getMenuFromFile('test/testUtil/invalidMenu.yml')
-        })
+            getMenuFromFile('test/menuReaderTest/testUtil/invalidMenu.yml')
+        }, YAMLException)
         done()
     })
 })

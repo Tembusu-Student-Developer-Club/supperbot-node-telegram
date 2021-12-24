@@ -26,90 +26,75 @@ describe('Chunkify', function () {
      * Tests whether randomized valid message within a specified CHAR_LIMIT is un-modified.
      */
 
-    it('should not modify valid simple messages (randomized input)', function(done) {
+    it('should not modify valid simple messages', function(done) {
         const actualChunkifiedMessage = chunkify("Valid Message", TELEGRAM_CHAR_LIMIT);
         assert.deepEqual(actualChunkifiedMessage, ["Valid Message"]);
         done();
     });
 
     /**
-     * Tests whether randomized, small valid messages containing CHAR_LIMIT characters is un-modified.
+     * Tests whether small valid messages containing CHAR_LIMIT characters is un-modified.
      */
 
-    it('should not modify valid small messages (randomized input)', function(done) {
-        const VALID_SMALL_TEST_MESSAGE = randomTextGenerator(SMALL_CHAR_LIMIT);
-        const actualChunkifiedMessage = chunkify(VALID_SMALL_TEST_MESSAGE, SMALL_CHAR_LIMIT);
-        assert.deepEqual(actualChunkifiedMessage, [VALID_SMALL_TEST_MESSAGE]);
-        done();
-    });
-
-    /**
-     * Tests whether randomized, large valid messages containing CHAR_LIMIT characters is un-modified.
-     */
-
-    it('should not modify valid large messages (randomized input)', function(done) {
-        const VALID_LARGE_TEST_MESSAGE = randomTextGenerator(TELEGRAM_CHAR_LIMIT);
-        const actualChunkifiedMessage = chunkify(VALID_LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
-        assert.deepEqual(actualChunkifiedMessage, [VALID_LARGE_TEST_MESSAGE]);
-        done();
-    });
-
-    /**
-     * Tests whether randomized, large messages containing number of characters greater than CHAR_LIMIT characters
-     * are modified appropriately (i.e. no Empty Strings within output).
-     */
-
-    it('should split large messages in order of linebreaks, whitespace and chars where appropriate (randomized input)', function(done) {
-        const LARGE_TEST_MESSAGE = randomTextGenerator(TELEGRAM_CHAR_LIMIT * Math.floor((Math.random() * 10)));
-        const actualChunkifiedMessage = chunkify(LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
-        if (LARGE_TEST_MESSAGE.length == 0){
-            assert.doesNotThrow(() => chunkify(LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT));
-        } else {
-            for (let i = 0; i < actualChunkifiedMessage.length; ++i) {
-                assert(actualChunkifiedMessage[i].length > 0 && actualChunkifiedMessage[i].length <= TELEGRAM_CHAR_LIMIT);
-            }
-        }
-        done();
-    });
-
-
-    /**
-     * Tests whether fixed, small valid messages containing CHAR_LIMIT characters is un-modified.
-     */
-
-    it('should not modify valid small messages (fixed input)', function(done) {
+    it('should not modify valid small messages (randomized + fixed input)', function(done) {
+        const RANDOM_VALID_SMALL_TEST_MESSAGE = randomTextGenerator(SMALL_CHAR_LIMIT);
         const testFilePath = "test/chunkify/testInputSmall.txt";
-        const VALID_SMALL_TEST_MESSAGE = readTextFile(testFilePath);
-        const actualChunkifiedMessage = chunkify(VALID_SMALL_TEST_MESSAGE, SMALL_CHAR_LIMIT);
-        assert.deepEqual(actualChunkifiedMessage, [VALID_SMALL_TEST_MESSAGE]);
+        const FIXED_VALID_SMALL_TEST_MESSAGE = readTextFile(testFilePath);
+
+        const actualChunkifiedMessageRandom = chunkify(RANDOM_VALID_SMALL_TEST_MESSAGE, SMALL_CHAR_LIMIT);
+        const actualChunkifiedMessageFixed = chunkify(FIXED_VALID_SMALL_TEST_MESSAGE, SMALL_CHAR_LIMIT);
+
+        //test: random valid text input, invalid number of characters
+        assert.deepEqual(actualChunkifiedMessageRandom, [RANDOM_VALID_SMALL_TEST_MESSAGE]);
+
+        //test: fixed valid text input, invalid number of characters
+        assert.deepEqual(actualChunkifiedMessageFixed, [FIXED_VALID_SMALL_TEST_MESSAGE]);
         done();
     });
 
     /**
-     * Tests whether fixed, large valid messages containing CHAR_LIMIT characters is un-modified.
+     * Tests whether large valid messages containing CHAR_LIMIT characters is un-modified.
      */
 
-    it('should not modify valid large messages (fixed input)', function(done) {
+    it('should not modify valid large messages (randomized + fixed input)', function(done) {
+        const RANDOM_VALID_LARGE_TEST_MESSAGE = randomTextGenerator(TELEGRAM_CHAR_LIMIT);
         const testFilePath = "test/chunkify/testInput.txt";
-        const VALID_LARGE_TEST_MESSAGE = readTextFile(testFilePath);
-        const actualChunkifiedMessage = chunkify(VALID_LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
-        assert.deepEqual(actualChunkifiedMessage, [VALID_LARGE_TEST_MESSAGE]);
+        const FIXED_VALID_LARGE_TEST_MESSAGE = readTextFile(testFilePath);
+
+        const actualChunkifiedMessageRandom = chunkify(RANDOM_VALID_LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
+        const actualChunkifiedMessageFixed = chunkify(FIXED_VALID_LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
+
+        //test: random valid text input, invalid number of characters
+        assert.deepEqual(actualChunkifiedMessageRandom, [RANDOM_VALID_LARGE_TEST_MESSAGE]);
+
+        //test: fixed valid text input, invalid number of characters
+        assert.deepEqual(actualChunkifiedMessageFixed, [FIXED_VALID_LARGE_TEST_MESSAGE]);
         done();
     });
 
     /**
-     * Tests whether fixed, large messages containing number of characters greater than CHAR_LIMIT characters are modified
-     * appropriately (i.e. no Empty Strings within output and split in order of linebreaks, whitespace and characters
-     * where appropriate).
+     * Tests whether large messages containing number of characters greater than CHAR_LIMIT characters
+     * are modified appropriately.
      */
 
-    it('should split large messages over CHAR_LIMIT in order of linebreaks, whitespace and characters where appropriate (fixed input)', function(done) {
+    it('should split large message into and return an array of strings with strictly positive size less than the char limit (randomized + fixed input)', function(done) {
+        const RANDOM_LARGE_TEST_MESSAGE = randomTextGenerator(TELEGRAM_CHAR_LIMIT * 2);
         const testFilePath = "test/chunkify/testInputLarge.txt";
-        const LARGE_TEST_MESSAGE = readTextFile(testFilePath);
-        const actualChunkifiedMessage = chunkify(LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
-        for (let i = 0; i < actualChunkifiedMessage.length; ++i){
-            assert(actualChunkifiedMessage[i].length > 0 && actualChunkifiedMessage[i].length <= TELEGRAM_CHAR_LIMIT);
+        const FIXED_LARGE_TEST_MESSAGE = readTextFile(testFilePath);
+
+        const actualChunkifiedMessageRandom = chunkify(RANDOM_LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
+        const actualChunkifiedMessageFixed = chunkify(FIXED_LARGE_TEST_MESSAGE, TELEGRAM_CHAR_LIMIT);
+
+        //test: random valid text input, invalid number of characters
+        for (let i = 0; i < actualChunkifiedMessageRandom.length; ++i) {
+            assert(actualChunkifiedMessageRandom[i].length > 0 && actualChunkifiedMessageRandom[i].length <= TELEGRAM_CHAR_LIMIT);
         }
+
+        //test: fixed valid text input, invalid number of characters
+        for (let i = 0; i < actualChunkifiedMessageFixed.length; ++i) {
+            assert(actualChunkifiedMessageFixed[i].length > 0 && actualChunkifiedMessageFixed[i].length <= TELEGRAM_CHAR_LIMIT);
+        }
+
         done();
     });
 
@@ -121,6 +106,18 @@ describe('Chunkify', function () {
         const testFilePath = "test/chunkify/testInputSmall.txt";
         const FIXED_VALID_SMALL_TEST_MESSAGE = readTextFile(testFilePath);
         const RANDOM_VALID_SMALL_TEST_MESSAGE = randomTextGenerator(SMALL_CHAR_LIMIT);
+
+        //test: empty String input, invalid number of characters
+        assert.throws(
+            () => {
+                chunkify(EMPTY_STRING, 0);
+            }
+        );
+        assert.throws(
+            () => {
+                chunkify(EMPTY_STRING, -1);
+            }
+        );
 
         //test: fixed valid text input, invalid number of characters
         assert.throws(

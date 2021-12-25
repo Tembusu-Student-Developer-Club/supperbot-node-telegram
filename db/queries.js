@@ -199,7 +199,7 @@ module.exports.getItemName = async function (params, callback) {
 }
 
 module.exports.getUsernameFromID = async function (params, callback) {
-    try{
+    try {
         const statement = `
 		select 	user_name
 		from 	miscellaneous.usernames
@@ -213,20 +213,18 @@ module.exports.getUsernameFromID = async function (params, callback) {
 }
 
 module.exports.updateUsername = async function (params, callback) {
-    try{
+    try {
         const statement = `
 		insert into 
 		miscellaneous.usernames (user_name, user_id)
 		values ($1, $2)
         on conflict (user_id) do update
-		set user_name = $3;`;
-        let args;
+		set user_name = $1;`;
         //checks if username is empty
         if (params.user_name === undefined) {
-           args = ["", params.user_id, ""];
-        } else{
-           args = [params.user_name, params.user_id, params.user_name];
+            params.user_name = "";
         }
+        const args = [params.user_name, params.user_id];
         await db.query(statement, args, callback);
     } catch (err) {
         console.log(err);

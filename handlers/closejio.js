@@ -126,7 +126,9 @@ const createOverviewMessage = async function (menuName, closerName, compiledOrde
     for (let i = 0; i < userOrders.length; i++) {
         let order = userOrders[i];
         if (!users.hasOwnProperty(order.user_id)) {
-            let user = await queries.getUsername(order.user_id);
+            let user = await queries.getUsernameFromID({
+                user_id: order.user_id,
+            });
             users[order.user_id] = [user, 0];
         }
         users[order.user_id][1] += order.price;

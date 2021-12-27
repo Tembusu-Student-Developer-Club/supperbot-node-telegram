@@ -198,16 +198,38 @@ module.exports.getItemName = async function (params, callback) {
     return res.rows[0].name;
 }
 
-module.exports.getUsername = async function (userId) {
-    const statement = `
-        select user_name as name
-        from jiodata.orders t1
-        where t1.user_id = $1
-        order by order_id desc
-        limit 1;`;
+module.exports.getUsernameFromID = async function (params, callback) {
+    try {
+        const statement = `
+            select 	user_name
+            from 	miscellaneous.usernames
+            where 	user_id = $1;`;
+        console.log(params.user_id);
+        const args = [params.user_id];
+        const res = await db.query(statement, args, callback);
+        return res.rows[0].user_name;
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-    const res = await db.query(statement, [userId]);
-    return res.rows[0].name;
+module.exports.updateUsername = async function (params, callback) {
+    try {
+        const statement = `
+            insert into 
+            miscellaneous.usernames (user_name, user_id)
+            values ($1, $2)
+            on conflict (user_id) do update
+            set user_name = $1;`;
+        //checks if username is empty
+        if (params.user_name === undefined) {
+            params.user_name = "";
+        }
+        const args = [params.user_name, params.user_id];
+        await db.query(statement, args, callback);
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 module.exports.getUserOrders = async function (params, callback) {
@@ -480,7 +502,10 @@ module.exports.getOrderMessage = async function (chat_id) {
             const order = orders[i];
             let remarks = order.remarks == null ? '' : sprintf(' (%s)', order.remarks);
             let modifiers = order.mods == null ? '' : sprintf(' (%s)', order.mods);
-            let user = await module.exports.getUsername(order.user_id);
+            let user = await module.exports.getUsernameFromID({
+                user_id: order.user_id,
+            });
+            console.log(user);
             result += sprintf('%s - %s%s%s x%s ($%.2f)\n',
                 user, order.item, modifiers, remarks, order.count, order.price / 100.0);
         }

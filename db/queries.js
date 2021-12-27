@@ -204,7 +204,7 @@ module.exports.getUsernameFromID = async function (params, callback) {
             select 	user_name
             from 	miscellaneous.usernames
             where 	user_id = $1;`;
-        console.log(params.user_id);
+
         const args = [params.user_id];
         const res = await db.query(statement, args, callback);
         return res.rows[0].user_name;
@@ -505,7 +505,6 @@ module.exports.getOrderMessage = async function (chat_id) {
             let user = await module.exports.getUsernameFromID({
                 user_id: order.user_id,
             });
-            console.log(user);
             result += sprintf('%s - %s%s%s x%s ($%.2f)\n',
                 user, order.item, modifiers, remarks, order.count, order.price / 100.0);
         }

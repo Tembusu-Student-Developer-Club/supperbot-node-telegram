@@ -74,7 +74,7 @@ module.exports.callback = async function (query) {
         // notify the chat
         const menuName = menus[menu];
         const closerName = query.from.first_name;
-        const text = createOverviewMessage(menuName, closerName, compiledOrders, userOrders, deliveryFee);
+        const text = await createOverviewMessage(menuName, closerName, compiledOrders, userOrders, deliveryFee);
         const message_id = await queries.getJioMessageID(chat_id);
         await messenger.send(chat_id, text, {reply_to_message_id: message_id});
         await queries.destroyListenerIds(chat_id)

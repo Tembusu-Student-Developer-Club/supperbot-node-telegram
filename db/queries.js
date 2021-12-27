@@ -277,6 +277,12 @@ module.exports.getUserOrderCounts = async function (params, callback) {
 
 module.exports.getChatOrders = async function (params, callback) {
     const menutable = 'menudata.' + menus[params.menu].split(' ').join('_');
+
+    // count(*): gives the quantity each unique groups of (user_id, item_id, mods, sum, remarks)
+    // COALESCE(s2.sum, 0): orders with no modifiers will have s2.sum == null, this function replaces null with 0
+    // left join appends any optional modifiers to jiodata.orders table
+    // string_agg(name, ', '): concatenate all modifiers of each order into a string with delimiter == ', '
+    // group by order_id: allows sum(price) => sum of all modifier prices belonging to each order_id
     const statement = `
 		select 	t1.item_name as item, t2.remarks, t2.count, ((t1.price + t2.sum) * t2.count)::int as price, t2.mods, t2.user_id
 		from 	${menutable} t1

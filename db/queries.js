@@ -198,6 +198,18 @@ module.exports.getItemName = async function (params, callback) {
     return res.rows[0].name;
 }
 
+module.exports.getUsername = async function (userId) {
+    const statement = `
+        select user_name as name
+        from jiodata.orders t1
+        where t1.user_id = $1
+        order by order_id desc
+        limit 1;`;
+
+    const res = await db.query(statement, [userId]);
+    return res.rows[0].name;
+}
+
 module.exports.getUserOrders = async function (params, callback) {
     const menuname = menus[params.menu];
     const menutable = 'menudata.' + menuname.split(' ').join('_');
@@ -244,8 +256,8 @@ module.exports.getUserOrderCounts = async function (params, callback) {
 module.exports.getChatOrders = async function (params, callback) {
     const menutable = 'menudata.' + menus[params.menu].split(' ').join('_');
     const statement = `
-		select 	t1.item_name as item, t2.remarks, t2.count, ((t1.price + t2.sum) * t2.count)::int as price, t2.mods, t3.user_name as user, t3.user_id
-		from 	${menutable} t1 
+		select 	t1.item_name as item, t2.remarks, t2.count, ((t1.price + t2.sum) * t2.count)::int as price, t2.mods, t2.user_id
+		from 	${menutable} t1
 		join (
 			select 	s1.user_id, s1.item_id, count(*), s1.remarks, s2.mods, COALESCE(s2.sum, 0) as sum
 			from 	jiodata.orders s1
@@ -259,12 +271,7 @@ module.exports.getChatOrders = async function (params, callback) {
 			group by user_id, item_id, mods, sum, remarks
 		) t2
 		on t1.item_id = t2.item_id
-		join (
-			select 	distinct user_id, user_name
-			from 	jiodata.orders 
-		) t3
-		on 		t2.user_id = t3.user_id
-		order by t3.user_name;`;
+		order by t2.user_id;`;
 
     const args = [params.chat_id];
 
@@ -473,8 +480,9 @@ module.exports.getOrderMessage = async function (chat_id) {
             const order = orders[i];
             let remarks = order.remarks == null ? '' : sprintf(' (%s)', order.remarks);
             let modifiers = order.mods == null ? '' : sprintf(' (%s)', order.mods);
+            let user = await module.exports.getUsername(order.user_id);
             result += sprintf('%s - %s%s%s x%s ($%.2f)\n',
-                order.user, order.item, modifiers, remarks, order.count, order.price / 100.0);
+                user, order.item, modifiers, remarks, order.count, order.price / 100.0);
         }
         return result;
     } catch (e) {

@@ -102,7 +102,7 @@ module.exports.callback = async function (query) {
     }
 }
 
-const createOverviewMessage = function (menuName, closerName, compiledOrders, userOrders, deliveryFee) {
+const createOverviewMessage = async function (menuName, closerName, compiledOrders, userOrders, deliveryFee) {
     let result = 'This jio for ' + menuName + ' was successfully closed by ' + closerName + '.\n\n'
     //TODO: add jio closer name
     if (compiledOrders.length === 0) {
@@ -126,7 +126,8 @@ const createOverviewMessage = function (menuName, closerName, compiledOrders, us
     for (let i = 0; i < userOrders.length; i++) {
         let order = userOrders[i];
         if (!users.hasOwnProperty(order.user_id)) {
-            users[order.user_id] = [order.user, 0];
+            let user = await queries.getUsername(order.user_id);
+            users[order.user_id] = [user, 0];
         }
         users[order.user_id][1] += order.price;
     }

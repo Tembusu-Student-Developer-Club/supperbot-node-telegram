@@ -12,9 +12,9 @@ function chunkify(message, maxChars){
 
     const firstSection = message.slice(0, maxChars);
 
-    const nextlineIdx = firstSection.lastIndexOf('\n');
+    const nextLineIdx = firstSection.lastIndexOf('\n');
     const carriageIdx = firstSection.lastIndexOf('\r');
-    const breakIdx = Math.max(nextlineIdx, carriageIdx); //the last occurrence of carriage return and newline
+    const breakIdx = Math.max(nextLineIdx, carriageIdx); //the last occurrence of carriage return and newline
 
     let currLine = '', remainder = '', splitIdx = 0;
 

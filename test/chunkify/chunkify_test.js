@@ -1,6 +1,6 @@
 const chunkify = require('../../helper/chunkify').chunkify;
-const randomTextGenerator = require('./randomTextGenerator').randomTextGenerator;
-const readTextFile = require('./readTextFile').readTextFile;
+const randomTextGenerator = require('../commons/randomTextGenerator').randomTextGenerator;
+const readTextFile = require('../commons/readTextFile').readTextFile;
 const assert = require('assert');
 
 const SMALL_CHAR_LIMIT = 60;

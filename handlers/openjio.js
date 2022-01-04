@@ -4,6 +4,7 @@ const sprintf = require("sprintf-js").sprintf;
 const queries = require('../db/queries');
 const menus = require('../config').menus;
 const commands = require('../config').commands;
+const max_length = require('../config').max_length;
 const {InlineKeyboard} = require('node-telegram-keyboard-wrapper');
 const messenger = require('../messenger');
 
@@ -14,7 +15,7 @@ const CREATION_SUCCESS_DIRECT_TEMPLATE = 'Jio for %s in chat group \"%s\" create
 // const CREATION_SUCCESS_TIME_TEMPLATE = ', with duration %s minutes.';
 const CREATION_FAILURE_TEMPLATE = 'Sorry, there was an unknown error in opening the jio'
 const DESCRIPTION_RECEIVED_RESPONSE = "Received! You can reply to the message again to update your jio description!";
-const DESCRIPTION_TOO_LONG_RESPONSE = "Your description is more than 200 characters, please try again with a shorter description!";
+const DESCRIPTION_TOO_LONG_RESPONSE = 'Your description is more than ' + max_length.jio_description.toString() + ' characters, please try again with a shorter description!';
 
 let bot;
 
@@ -110,29 +111,30 @@ const notifyOpenjioSuccess = async function (query) {
     //listener for reply with description
     const replyListenerId = await bot.onReplyToMessage(query.message.chat.id, query.message.message_id, async (replymsg) => {
         try {
-            if (replymsg.text.length > 200) {
+            //checks if description is longer than allowed
+            if (replymsg.text.length > max_length.jio_description) {
                 messenger.send(query.message.chat.id, DESCRIPTION_TOO_LONG_RESPONSE);
-            } else {
-                //update message in group chat
-                const description = replymsg.from.first_name + " says: " + replymsg.text + "\n\n";
-                await queries.storeJioDescription(data['chat_id'], description);
-                const newMessageData = (await queries.getJioMessageData(msg.chat.id)).text;
-                messenger.edit(
-                    data['chat_id'],
-                    msg.message_id,
-                    null,
-                    newMessageData + await queries.getOrderMessage(data['chat_id']),
-                    ikb.reply_markup
-                );
-
-                //update direct message to creator
-                messenger.send(
-                    query.message.chat.id,
-                    DESCRIPTION_RECEIVED_RESPONSE,
-                    null,
-                    null,
-                );
+                return;
             }
+            //update message in group chat
+            const description = replymsg.from.first_name + " says: " + replymsg.text + "\n\n";
+            await queries.storeJioDescription(data['chat_id'], description);
+            const newMessageData = (await queries.getJioMessageData(msg.chat.id)).text;
+            messenger.edit(
+                data['chat_id'],
+                msg.message_id,
+                null,
+                newMessageData + await queries.getOrderMessage(data['chat_id']),
+                ikb.reply_markup
+            );
+
+            //update direct message to creator
+            messenger.send(
+                query.message.chat.id,
+                DESCRIPTION_RECEIVED_RESPONSE,
+                null,
+                null,
+            );
         } catch (err) {
             console.log(err);
         }

@@ -21,7 +21,6 @@ function getMenuFromFile(fileName) {
         console.log(e.name)
         throw e;
     }
-
 }
 
 exports.getMenuFromFile = getMenuFromFile;
@@ -29,8 +28,3 @@ exports.Menu = Menu;
 
 // To print the result of the parsed yaml
 // console.log(getMenuFromFile('../menu.yml'))
-
-
-
-
-

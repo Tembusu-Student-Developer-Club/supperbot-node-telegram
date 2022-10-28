@@ -10,7 +10,9 @@ module.exports.birthday = async function (msg) {
     const lowerText = originalText.toLowerCase();
     let matched = false;
     for (const str of stringsToMatch) {
-        if (lowerText.indexOf(str) === 0) {
+        let exp = str + "\\S*";
+        const regex = new RegExp(exp);
+        if (regex.test(lowerText)) {
             matched = true;
             break;
         }
